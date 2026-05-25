@@ -120,9 +120,20 @@ layout: default
           </div>
         {% endif %}
 
-        <!-- RenderCV Sections - Merge Experience and Volunteer -->
-        {% comment %} First, combine Experience and Volunteer entries {% endcomment %}
+        <!-- RenderCV Sections -->
         {% assign empty_array = '' | split: ',' %}
+
+        {% if cv.sections.Education.size > 0 %}
+          <a class="anchor" id="education"></a>
+          <div class="card mt-3 p-3">
+            <h3 class="card-title font-weight-medium">Education</h3>
+            <div>
+              {% assign entries = cv.sections.Education %}
+              {% include cv/education.liquid %}
+            </div>
+          </div>
+        {% endif %}
+
         {% assign exp = cv.sections.Experience | default: empty_array %}
         {% assign vol = cv.sections.Volunteer | default: empty_array %}
         {% assign combined_experience = exp | concat: vol %}
@@ -137,13 +148,24 @@ layout: default
           </div>
         {% endif %}
 
-        {% comment %} Now render all other sections except Experience and Volunteer {% endcomment %}
+        {% if cv.sections.Publications.size > 0 %}
+          <a class="anchor" id="publications"></a>
+          <div class="card mt-3 p-3">
+            <h3 class="card-title font-weight-medium">Publications</h3>
+            <div>
+              {% assign entries = cv.sections.Publications %}
+              {% include cv/publications.liquid %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% comment %} Now render all other sections after the primary academic sections. {% endcomment %}
         {% for section_pair in cv.sections %}
           {% assign section_title = section_pair[0] %}
           {% assign section_entries = section_pair[1] %}
 
-          {% comment %} Skip Experience and Volunteer as we've already processed them combined {% endcomment %}
-          {% if section_title == 'Experience' or section_title == 'Volunteer' %}
+          {% comment %} Skip primary sections already processed above. {% endcomment %}
+          {% if section_title == 'Education' or section_title == 'Experience' or section_title == 'Volunteer' or section_title == 'Publications' %}
             {% continue %}
           {% endif %}
 
